@@ -2,7 +2,7 @@ spring:
   application:
     name: realtimechat
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost:3306}/chatRoom?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://${MYSQL_HOST:localhost:3307}/chatRoom?serverTimezone=Asia/Seoul
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:131072}
   jpa:

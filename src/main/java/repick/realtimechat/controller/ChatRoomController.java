@@ -2,16 +2,13 @@ package repick.realtimechat.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.*;
 import repick.realtimechat.Request.ChatRoomRequest;
+import repick.realtimechat.Response.ChatRoomResponse;
 import repick.realtimechat.domain.ChatRoom;
-import repick.realtimechat.repository.ChatRoomRepository;
 import repick.realtimechat.service.ChatRoomService;
 import repick.realtimechat.service.TokenProvider;
 
-import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin("*")
@@ -23,17 +20,18 @@ public class ChatRoomController {
     private final TokenProvider tokenProvider;
 
     @PostMapping
-    public ChatRoom createChatRoom(@RequestBody ChatRoomRequest chatRoomRequest) {
-       return chatRoomService.createChatRoom(chatRoomRequest);
+    public String createChatRoom(@RequestBody ChatRoomRequest chatRoomRequest) {
+        chatRoomService.createChatRoom(chatRoomRequest);
+       return "created";
     }
 
     @GetMapping("/{uuid}")
-    public ChatRoom findByUUID(@PathVariable UUID uuid) {
-        return chatRoomService.findChatRoomByUUID(uuid);
+    public ChatRoomResponse findByUUID(@PathVariable UUID uuid) {
+        return ChatRoomResponse.from(chatRoomService.findChatRoomByUUID(uuid));
     }
 
     @GetMapping("/chatroom")
-    public Page<ChatRoom> findChatRooms() {
+    public Page<ChatRoomResponse> findChatRooms() {
         return chatRoomService.getChatRoom(0,20);
     }
 
