@@ -1,24 +1,11 @@
 package repick.realtimechat.service;
 
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+public interface KafkaService {
+    void sendMessage(String topic, String message);
 
-@Service
-@RequiredArgsConstructor
-public class KafkaService {
+    void addContainer(String topic);
 
-    private final KafkaProducerService kafkaProducerService;
-    private final KafkaContainerManager containerManager;
-    @PostConstruct
-    public void initializeKafkaComponents() {
-        try {
-            containerManager.addContainer("testConnect");
-            Thread.sleep(1000);
-            kafkaProducerService.initializeProducer();
-            System.out.println("Kafka components have been initialized.");
-        } catch (Exception e) {
-            System.err.println("Failed to initialize Kafka components: " + e.getMessage());
-        }
-    }
+    void removeContainer(String topic);
+
+    void createTopicAndListener(String ChatRoomId);
 }

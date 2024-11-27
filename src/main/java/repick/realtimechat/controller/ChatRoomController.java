@@ -5,11 +5,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import repick.realtimechat.Request.ChatRoomRequest;
 import repick.realtimechat.Response.ChatRoomResponse;
-import repick.realtimechat.domain.ChatRoom;
+import repick.realtimechat.domain.ChatUser;
+import repick.realtimechat.domain.HashTag;
 import repick.realtimechat.service.ChatRoomService;
-import repick.realtimechat.service.TokenProvider;
+import repick.realtimechat.service.ChatUserService;
+import repick.realtimechat.service.HashTagService;
 
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @RestController
@@ -17,11 +23,21 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
-    private final TokenProvider tokenProvider;
+    private final ChatUserService chatUserService;
+    private final HashTagService hashTagService;
 
     @PostMapping
     public String createChatRoom(@RequestBody ChatRoomRequest chatRoomRequest) {
-        chatRoomService.createChatRoom(chatRoomRequest);
+        ChatUser chatUser = chatUserService.saveUserFromToken(chatRoomRequest.getToken());
+        Set<HashTag> hashTags = new HashSet<>();
+        if (chatRoomRequest.getHashTags() != null && !chatRoomRequest.getHashTags().isEmpty()) {
+            for (String tagName : chatRoomRequest.getHashTags()) {
+                Optional<HashTag> optionalHashTag = hashTagService.getHashTag(tagName);
+                HashTag hashTag = optionalHashTag.orElseGet(() -> hashTagService.saveHashTag(tagName));
+                hashTags.add(hashTag);
+            }
+        }
+        chatRoomService.createChatRoom(chatRoomRequest, chatUser, hashTags);
        return "created";
     }
 
@@ -39,7 +55,7 @@ public class ChatRoomController {
     public String test(
             @RequestParam String token
     ) {
-        tokenProvider.getUserIdFromToken(token);
+        chatUserService.saveUserFromToken(token);
         return "ok";
     }
 
