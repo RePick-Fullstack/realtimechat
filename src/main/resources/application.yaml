@@ -2,9 +2,9 @@ spring:
   application:
     name: realtimechat
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost:3307}/chatRoom?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://${MYSQL_HOST:localhost:3310}/chatRoom?serverTimezone=Asia/Seoul
     username: ${MYSQL_USER:root}
-    password: ${MYSQL_PASSWORD:131072}
+    password: ${MYSQL_PASSWORD:root_password}
   jpa:
     hibernate:
       ddl-auto: create # 기존 'create'를 변경했으나 필요에 따라 수정
@@ -26,5 +26,3 @@ spring:
 
 jwt:
   secret-key: 4Ixa3PT4KhLW1fz4bJoY8z2dR4Gk7jHpB3Yw8mQvL9NdXx5vT9Yw8VhN3rB4YxK2
-server:
-  port: 8081

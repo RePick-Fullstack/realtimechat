@@ -35,8 +35,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public Page<ChatRoomResponse> getChatRoom(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<ChatRoom> chatRooms = chatRoomRepository.findAll(pageable);
+        Page<ChatRoom> chatRooms = chatRoomRepository.findNotPrivateChatRooms(pageable);
         return chatRooms.map(ChatRoomResponse::from);
+    }
+
+    @Override
+    public void resetChatRoom() {
+        chatRoomRepository.deleteAll();
     }
 
 }

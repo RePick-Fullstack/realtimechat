@@ -51,6 +51,12 @@ public class ChatRoomController {
         return chatRoomService.getChatRoom(0,20);
     }
 
+    @GetMapping("/reset")
+    public String resetChatRoom() {
+        chatRoomService.resetChatRoom();
+        return "reset completed";
+    }
+
     @GetMapping("/test")
     public String test(
             @RequestParam String token

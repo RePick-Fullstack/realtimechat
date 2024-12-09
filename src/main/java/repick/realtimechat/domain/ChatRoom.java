@@ -24,6 +24,9 @@ public class ChatRoom extends CreateTImeEntity {
 
     private String chatRoomName;
 
+    @Builder.Default
+    private Boolean isPrivate = false;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private ChatUser ownerUser;

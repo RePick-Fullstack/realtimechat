@@ -14,4 +14,5 @@ public interface ChatRoomService {
     void createChatRoom(ChatRoomRequest chatRoomRequest, ChatUser chatUser, Set<HashTag> hashTags);
     ChatRoom findChatRoomByUUID(UUID uuid);
     Page<ChatRoomResponse> getChatRoom(int page, int size);
+    void resetChatRoom();
 }
