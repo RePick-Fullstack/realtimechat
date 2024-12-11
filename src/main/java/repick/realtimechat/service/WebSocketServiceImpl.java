@@ -15,6 +15,7 @@ import repick.realtimechat.domain.ChatUser;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +24,9 @@ public class WebSocketServiceImpl implements WebSocketService {
     private final ChatRoomMessageService chatRoomMessageService;
     private final ChatRoomService chatRoomService;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final HashMap<String, WebSocketSession> store = new HashMap<>();
+    private final ConcurrentHashMap<String, WebSocketSession> store = new ConcurrentHashMap<>();
     private final ChatUserService chatUserService;
-    private final HashMap<String, HashMap<WebSocketSession, ChatUserDTO>> sessions = new HashMap<>();
+    private final ConcurrentHashMap<String, HashMap<WebSocketSession, ChatUserDTO>> sessions = new ConcurrentHashMap<>();
 
     @Override
     public String getChatRoomId(WebSocketSession session) {
