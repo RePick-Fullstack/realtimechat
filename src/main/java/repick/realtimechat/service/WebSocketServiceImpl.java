@@ -40,9 +40,9 @@ public class WebSocketServiceImpl implements WebSocketService {
     }
 
     @Override
-    public void StoreAdd(WebSocketSession session) {
-        System.out.println("session Id added: " + session.getId());
-        store.put(session.getId(), session);
+    public void StoreAdd(String sessionId ,WebSocketSession session) {
+        System.out.println("session Id added: " + sessionId);
+        store.put(sessionId, session);
     }
 
     @Override

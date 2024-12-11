@@ -24,7 +24,7 @@ public class WebSocketController extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         System.out.println("new connect :" + session.getId());
-        webSocketService.StoreAdd(session);
+        webSocketService.StoreAdd(session.getId(),session);
         kafkaService.createTopicAndListener(webSocketService.getChatRoomId(session));
     }
 

@@ -12,7 +12,7 @@ public interface WebSocketService {
 
     HashMap<WebSocketSession, ChatUserDTO> sessionGetChatRoomId(String chatRoomId);
 
-    void StoreAdd(WebSocketSession session);
+    void StoreAdd(String sessionId ,WebSocketSession session);
 
     boolean StoreRemove(WebSocketSession session);
 
