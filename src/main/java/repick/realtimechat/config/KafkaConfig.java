@@ -15,11 +15,10 @@ import java.util.UUID;
 
 @Configuration
 public class KafkaConfig {
-
-    @Value("${kafka.bootstrap-servers:localhost:9092}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("${kafka.consumer.group-id:default-group}")
+    @Value("${spring.kafka.consumer.group-id:default-group}")
     private String groupId;
 
     @Bean
