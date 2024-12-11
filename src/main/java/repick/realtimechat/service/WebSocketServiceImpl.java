@@ -29,7 +29,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     @Override
     public String getChatRoomId(WebSocketSession session) {
-        return Objects.requireNonNull(session.getUri()).getPath().split("/")[2];
+        return Objects.requireNonNull(session.getUri()).getPath().split("/websocket/")[1];
     }
 
     @Override
