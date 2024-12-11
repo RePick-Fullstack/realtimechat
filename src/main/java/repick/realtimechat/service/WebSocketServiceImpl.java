@@ -13,6 +13,7 @@ import repick.realtimechat.domain.ChatRoom;
 import repick.realtimechat.domain.ChatUser;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,9 +25,9 @@ public class WebSocketServiceImpl implements WebSocketService {
     private final ChatRoomMessageService chatRoomMessageService;
     private final ChatRoomService chatRoomService;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final ConcurrentHashMap<String, WebSocketSession> store = new ConcurrentHashMap<>();
+    private final Map<String, WebSocketSession> store = new ConcurrentHashMap<>();
     private final ChatUserService chatUserService;
-    private final ConcurrentHashMap<String, HashMap<WebSocketSession, ChatUserDTO>> sessions = new ConcurrentHashMap<>();
+    private final Map<String, HashMap<WebSocketSession, ChatUserDTO>> sessions = new ConcurrentHashMap<>();
 
     @Override
     public String getChatRoomId(WebSocketSession session) {
@@ -40,6 +41,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     @Override
     public void StoreAdd(WebSocketSession session) {
+        System.out.println("session Id added: " + session.getId());
         store.put(session.getId(), session);
     }
 
@@ -55,6 +57,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     @Override
     public WebSocketSession getSession(String id) {
+        System.out.println("session Id getting: " + id);
         return store.get(id);
     }
 
