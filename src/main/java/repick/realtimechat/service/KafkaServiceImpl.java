@@ -80,6 +80,7 @@ public class KafkaServiceImpl implements KafkaService {
             if (jsonNode.has("sessionId")) {
                 String uuid = jsonNode.get("uuid").asText();
                 WebSocketSession session = webSocketService.getSession(jsonNode.get("sessionId").asText());
+                System.out.println("session Check: " + session);
                 System.out.println("Sending message: " + uuid);
                 try {
                     session.sendMessage(new TextMessage("{\"uuid\":\"" + uuid + "\"}"));
