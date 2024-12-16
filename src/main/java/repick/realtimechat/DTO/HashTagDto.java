@@ -7,7 +7,7 @@ public record HashTagDto(
 ) {
     public static HashTagDto from(HashTag hashTag){
         return new HashTagDto(
-            hashTag.getTag()
+                hashTag.getTag()
         );
     }
 }

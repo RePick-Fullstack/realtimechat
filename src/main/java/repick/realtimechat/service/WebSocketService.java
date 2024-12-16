@@ -1,24 +1,23 @@
 package repick.realtimechat.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.web.socket.WebSocketSession;
-import repick.realtimechat.DTO.ChatUserDTO;
+import repick.realtimechat.Response.ChatUserResponse;
 
 import java.util.HashMap;
 
 public interface WebSocketService {
     String getChatRoomId(WebSocketSession session);
 
-    HashMap<WebSocketSession, ChatUserDTO> sessionGetChatRoomId(String chatRoomId);
-
-    void StoreAdd(String sessionId ,WebSocketSession session);
+    HashMap<WebSocketSession, ChatUserResponse> sessionGetChatRoomId(String chatRoomId);
 
     boolean StoreRemove(WebSocketSession session);
 
-    WebSocketSession getSession(String id);
+    WebSocketSession getUserIdSession(Long id);
 
-    String tokenMessage(WebSocketSession session, JsonNode jsonNode) throws JsonProcessingException;
+    void deleteUserIdSession(Long id);
 
-    String inputMessage(WebSocketSession session, JsonNode jsonNode) throws JsonProcessingException;
+    void tokenMessage(WebSocketSession session, Long id);
+
+    String inputMessage(WebSocketSession session, String messagePayLoad) throws JsonProcessingException;
 }

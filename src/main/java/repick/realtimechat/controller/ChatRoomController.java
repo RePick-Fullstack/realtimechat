@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import repick.realtimechat.Request.ChatRoomRequest;
 import repick.realtimechat.Response.ChatRoomResponse;
+import repick.realtimechat.Response.ChatUserResponse;
 import repick.realtimechat.domain.ChatUser;
 import repick.realtimechat.domain.HashTag;
 import repick.realtimechat.service.ChatRoomService;
@@ -15,7 +16,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @RestController
@@ -47,8 +47,11 @@ public class ChatRoomController {
     }
 
     @GetMapping("/chatroom")
-    public Page<ChatRoomResponse> findChatRooms() {
-        return chatRoomService.getChatRoom(0,20);
+    public Page<ChatRoomResponse> findChatRooms(
+            @RequestParam int page,
+            @RequestParam int size
+    ) {
+        return chatRoomService.getChatRoom(page,size);
     }
 
     @GetMapping("/reset")
@@ -57,12 +60,11 @@ public class ChatRoomController {
         return "reset completed";
     }
 
-    @GetMapping("/test")
-    public String test(
-            @RequestParam String token
+    @GetMapping("/verification")
+    public ChatUserResponse userVerification(
+            @RequestHeader String Authorization
     ) {
-        chatUserService.saveUserFromToken(token);
-        return "ok";
+        return ChatUserResponse.from(chatUserService.saveUserFromToken(Authorization));
     }
 
 }

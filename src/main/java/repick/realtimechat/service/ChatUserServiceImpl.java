@@ -19,7 +19,8 @@ public class ChatUserServiceImpl implements ChatUserService {
     private String jwtSecretKey;
 
     @Override
-    public ChatUser saveUserFromToken(String token) {
+    public ChatUser saveUserFromToken(String bearerToken) {
+        String token = bearerToken.split(" ")[1];
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecretKey)
                 .parseClaimsJws(token)
@@ -27,12 +28,14 @@ public class ChatUserServiceImpl implements ChatUserService {
         Long userId = claims.get("userId", Long.class);
         String nickName = claims.get("nickName", String.class);
         ChatUser chatuser = ChatUser.builder().id(userId).username(nickName).build();
-        saveUser(chatuser);
+        if (!chatUserRepository.existsById(chatuser.getId())) {
+            chatUserRepository.save(chatuser);
+        }
         return chatuser;
     }
 
     @Override
-    public void saveUser(ChatUser chatUser) {
-        chatUserRepository.save(chatUser);
+    public ChatUser getUserId(Long id) {
+        return chatUserRepository.findById(id).orElse(null);
     }
 }

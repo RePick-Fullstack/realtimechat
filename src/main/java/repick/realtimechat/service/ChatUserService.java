@@ -5,5 +5,5 @@ import repick.realtimechat.domain.ChatUser;
 public interface ChatUserService {
     ChatUser saveUserFromToken(String token);
 
-    void saveUser(ChatUser chatUser);
+    ChatUser getUserId(Long id);
 }

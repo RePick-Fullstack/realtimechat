@@ -1,18 +1,17 @@
 package repick.realtimechat.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import repick.realtimechat.Response.ChatUserResponse;
 
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class MessageDTO extends ChatUserDTO {
-    private String message;
 
-    public MessageDTO(ChatUserDTO chatUserDTO, String messageStr) {
-        this.message = messageStr;
-        this.uuid = chatUserDTO.getUuid();
-        this.nickName = chatUserDTO.getNickName();
+public record MessageDTO(
+        Long userId,
+        String username,
+        String message) {
+    public static MessageDTO from(ChatUserResponse chatUserResponse, String message) {
+        return new MessageDTO(
+                chatUserResponse.id(),
+                chatUserResponse.nickName(),
+                message
+        );
     }
 }

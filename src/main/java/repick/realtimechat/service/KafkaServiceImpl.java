@@ -1,7 +1,5 @@
 package repick.realtimechat.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -15,7 +13,6 @@ import org.springframework.kafka.listener.MessageListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import repick.realtimechat.DTO.ChatUserDTO;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -65,42 +62,30 @@ public class KafkaServiceImpl implements KafkaService {
     }
 
     public ConcurrentMessageListenerContainer<String, String> createContainer(String topicName) {
-        // 컨테이너 프로퍼티 설정
         ContainerProperties containerProps = new ContainerProperties(topicName);
-        // 메시지 리스너 설정
         containerProps.setMessageListener((MessageListener<String, String>) record -> {
             String message = record.value();
             System.out.println("Received message: " + message);
-            JsonNode jsonNode = null;
             try {
-                jsonNode = objectMapper.readTree(message);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-            if (jsonNode.has("sessionId")) {
-                String uuid = jsonNode.get("uuid").asText();
-                WebSocketSession session = webSocketService.getSession(jsonNode.get("sessionId").asText());
-                System.out.println("session Check: " + session);
-                System.out.println("Sending message: " + uuid);
+                Long id = Long.parseLong(message);
+                WebSocketSession session = webSocketService.getUserIdSession(id);
                 try {
-                    session.sendMessage(new TextMessage("{\"uuid\":\"" + uuid + "\"}"));
+                    session.sendMessage(new TextMessage(message));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            } else
-                for (Map.Entry<WebSocketSession, ChatUserDTO> entry : webSocketService.sessionGetChatRoomId(topicName).entrySet()) {
-                    WebSocketSession session = entry.getKey();
+                webSocketService.deleteUserIdSession(id);
+            } catch (NumberFormatException err) {
+                for (WebSocketSession session : webSocketService.sessionGetChatRoomId(topicName).keySet()) {
                     try {
                         session.sendMessage(new TextMessage(message));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 }
-
+            }
         });
-        // 동적 컨테이너 생성
         ConcurrentMessageListenerContainer<String, String> container = factory.createContainer(topicName);
-        // 컨테이너 프로퍼티 설정
         container.getContainerProperties().setMessageListener(containerProps.getMessageListener());
         container.getContainerProperties().setGroupId(groupId);
 

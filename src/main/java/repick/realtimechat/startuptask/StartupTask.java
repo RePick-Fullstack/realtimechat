@@ -1,6 +1,5 @@
 package repick.realtimechat.startuptask;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -10,7 +9,6 @@ import repick.realtimechat.domain.ChatUser;
 import repick.realtimechat.domain.HashTag;
 import repick.realtimechat.repository.ChatRoomRepository;
 import repick.realtimechat.repository.ChatUserRepository;
-import repick.realtimechat.service.ChatRoomService;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,6 +36,7 @@ public class StartupTask {
                 .ownerUser(chatUser)
                 .chatUsers(chatUsers)
                 .hashTags(hashTags)
+                .isPrivate(true)
                 .build();
         chatRoomRepository.save(chatRoom);
     }
