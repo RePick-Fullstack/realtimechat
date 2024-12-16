@@ -2,12 +2,18 @@ package repick.realtimechat.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.web.bind.annotation.*;
+import repick.realtimechat.DTO.MessageDTO;
 import repick.realtimechat.Request.ChatRoomRequest;
 import repick.realtimechat.Response.ChatRoomResponse;
 import repick.realtimechat.Response.ChatUserResponse;
+import repick.realtimechat.domain.ChatRoom;
 import repick.realtimechat.domain.ChatUser;
 import repick.realtimechat.domain.HashTag;
+import repick.realtimechat.repository.ChatRoomMessageRepository;
+import repick.realtimechat.repository.ChatRoomRepository;
+import repick.realtimechat.service.ChatRoomMessageService;
 import repick.realtimechat.service.ChatRoomService;
 import repick.realtimechat.service.ChatUserService;
 import repick.realtimechat.service.HashTagService;
@@ -25,6 +31,7 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final ChatUserService chatUserService;
     private final HashTagService hashTagService;
+    private final ChatRoomMessageService chatRoomMessageService;
 
     @PostMapping
     public String createChatRoom(@RequestBody ChatRoomRequest chatRoomRequest) {
@@ -52,6 +59,16 @@ public class ChatRoomController {
             @RequestParam int size
     ) {
         return chatRoomService.getChatRoom(page,size);
+    }
+
+    @GetMapping("/{uuid}/message")
+    public Page<MessageDTO> findByUUIDMessages(
+            @PathVariable UUID uuid,
+            @RequestParam int page,
+            @RequestParam int size
+    ) {
+        ChatRoom chatRoom = chatRoomService.findChatRoomByUUID(uuid);
+        return chatRoomMessageService.getChatRoomId(chatRoom.getId(), page, size);
     }
 
     @GetMapping("/reset")

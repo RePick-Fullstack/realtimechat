@@ -1,17 +1,23 @@
 package repick.realtimechat.DTO;
 
 import repick.realtimechat.Response.ChatUserResponse;
+import repick.realtimechat.domain.ChatRoomMessage;
+
+import java.time.LocalDateTime;
 
 
 public record MessageDTO(
         Long userId,
         String username,
-        String message) {
-    public static MessageDTO from(ChatUserResponse chatUserResponse, String message) {
+        String message,
+        String createAt
+) {
+    public static MessageDTO from(ChatRoomMessage chatRoomMessage) {
         return new MessageDTO(
-                chatUserResponse.id(),
-                chatUserResponse.nickName(),
-                message
+                chatRoomMessage.getSender().getId(),
+                chatRoomMessage.getSender().getUsername(),
+                chatRoomMessage.getMessage(),
+                chatRoomMessage.getCreatedAt().toString()
         );
     }
 }

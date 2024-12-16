@@ -1,7 +1,10 @@
 package repick.realtimechat.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import repick.realtimechat.DTO.MessageDTO;
 import repick.realtimechat.domain.ChatRoom;
 import repick.realtimechat.domain.ChatRoomMessage;
 import repick.realtimechat.domain.ChatUser;
@@ -13,12 +16,13 @@ public class ChatRoomMessageServiceImpl implements ChatRoomMessageService {
     private final ChatRoomMessageRepository chatRoomMessageRepository;
 
     @Override
-    public ChatRoomMessage createChatRoomMessage(ChatRoom chatRoom, ChatUser chatUser, String message) {
-        return ChatRoomMessage.builder().chatRoom(chatRoom).sender(chatUser).message(message).build();
+    public ChatRoomMessage saveChatRoomMessage(ChatRoom chatRoom, ChatUser chatUser, String message) {
+        ChatRoomMessage chatRoomMessage = ChatRoomMessage.from(chatRoom, chatUser, message);
+        return chatRoomMessageRepository.save(chatRoomMessage);
     }
 
     @Override
-    public void saveChatRoomMessage(ChatRoomMessage chatRoomMessage) {
-        chatRoomMessageRepository.save(chatRoomMessage);
+    public Page<MessageDTO> getChatRoomId(Long chatRoomId, int page, int size){
+        return chatRoomMessageRepository.findChatRoomId(chatRoomId, PageRequest.of(page, size)).map(MessageDTO::from);
     }
 }

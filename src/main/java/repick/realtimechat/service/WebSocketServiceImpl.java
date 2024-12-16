@@ -9,6 +9,7 @@ import org.springframework.web.socket.WebSocketSession;
 import repick.realtimechat.DTO.MessageDTO;
 import repick.realtimechat.Response.ChatUserResponse;
 import repick.realtimechat.domain.ChatRoom;
+import repick.realtimechat.domain.ChatRoomMessage;
 import repick.realtimechat.domain.ChatUser;
 
 import java.util.HashMap;
@@ -74,7 +75,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         ChatUserResponse chatUserResponse = sessions.get(chatRoomId).get(session);
         ChatUser chatUser = chatUserService.getUserId(chatUserResponse.id());
         ChatRoom chatRoom = chatRoomService.findChatRoomByUUID(UUID.fromString(chatRoomId));
-        chatRoomMessageService.saveChatRoomMessage(chatRoomMessageService.createChatRoomMessage(chatRoom, chatUser, input));
-        return objectMapper.writeValueAsString(MessageDTO.from(ChatUserResponse.from(chatUser), input));
+        ChatRoomMessage chatRoomMessage = chatRoomMessageService.saveChatRoomMessage(chatRoom, chatUser, input);
+        return objectMapper.writeValueAsString(MessageDTO.from(chatRoomMessage));
     }
 }

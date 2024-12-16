@@ -27,4 +27,13 @@ public class ChatRoomMessage extends CreateTImeEntity {
     private ChatUser sender;
 
     private String message;
+
+    public static ChatRoomMessage from(ChatRoom chatRoom, ChatUser chatUser, String message) {
+        return ChatRoomMessage
+                .builder()
+                .chatRoom(chatRoom)
+                .sender(chatUser)
+                .message(message)
+                .build();
+    }
 }
