@@ -41,6 +41,7 @@ public class KafkaServiceImpl implements KafkaService {
 
     @KafkaListener(id = "realtimechat", topics = "updateusernickname")
     public void listen(UpdateUserNickName updateUserNickName){
+        System.out.println("User NickName Changed: " + updateUserNickName.getNickName());
         chatUserService.UpdateUserNickName(updateUserNickName);
     }
 
