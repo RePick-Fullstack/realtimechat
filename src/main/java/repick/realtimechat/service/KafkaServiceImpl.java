@@ -18,6 +18,7 @@ import repick.realtimechat.DTO.UpdateUserNickName;
 import repick.realtimechat.domain.ChatUser;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +29,8 @@ public class KafkaServiceImpl implements KafkaService {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final WebSocketService webSocketService;
     private final ChatUserService chatUserService;
-    private final ConcurrentKafkaListenerContainerFactory<String, String> factory;
-    private final Map<String, ConcurrentMessageListenerContainer<String, String>> containers = new HashMap<>();
+    private final ConcurrentKafkaListenerContainerFactory<String, byte[]> factory;
+    private final Map<String, ConcurrentMessageListenerContainer<String, byte[]>> containers = new HashMap<>();
 
     @Value("${kafka.consumer.group-id:default-group}")
     private String groupId;
@@ -48,7 +49,7 @@ public class KafkaServiceImpl implements KafkaService {
     @Override
     public void addContainer(String topic) {
         if (!containers.containsKey(topic)) {
-            ConcurrentMessageListenerContainer<String, String> container =
+            ConcurrentMessageListenerContainer<String, byte[]> container =
                     createContainer(topic);
             containers.put(topic, container);
         }
@@ -56,7 +57,7 @@ public class KafkaServiceImpl implements KafkaService {
 
     @Override
     public void removeContainer(String topic) {
-        ConcurrentMessageListenerContainer<String, String> container = containers.remove(topic);
+        ConcurrentMessageListenerContainer<String, byte[]> container = containers.remove(topic);
         if (container != null) {
             container.stop();
         }
@@ -70,10 +71,10 @@ public class KafkaServiceImpl implements KafkaService {
         }
     }
 
-    public ConcurrentMessageListenerContainer<String, String> createContainer(String topicName) {
+    public ConcurrentMessageListenerContainer<String, byte[]> createContainer(String topicName) {
         ContainerProperties containerProps = new ContainerProperties(topicName);
-        containerProps.setMessageListener((MessageListener<String, String>) record -> {
-            String message = record.value();
+        containerProps.setMessageListener((MessageListener<String, byte[]>) record -> {
+            String message = new String(record.value());
             System.out.println("Received message: " + message);
             try {
                 Long id = Long.parseLong(message);
@@ -94,7 +95,7 @@ public class KafkaServiceImpl implements KafkaService {
                 }
             }
         });
-        ConcurrentMessageListenerContainer<String, String> container = factory.createContainer(topicName);
+        ConcurrentMessageListenerContainer<String, byte[]> container = factory.createContainer(topicName);
         container.getContainerProperties().setMessageListener(containerProps.getMessageListener());
         container.getContainerProperties().setGroupId(groupId);
 
