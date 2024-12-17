@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import repick.realtimechat.DTO.UpdateUserNickName;
 import repick.realtimechat.domain.ChatUser;
 import repick.realtimechat.repository.ChatUserRepository;
 
@@ -37,5 +38,10 @@ public class ChatUserServiceImpl implements ChatUserService {
     @Override
     public ChatUser getUserId(Long id) {
         return chatUserRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void UpdateUserNickName(UpdateUserNickName updateUserNickName){
+        chatUserRepository.updateNicknameById(updateUserNickName.getUserId(), updateUserNickName.getNickName());
     }
 }

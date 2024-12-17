@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -13,6 +14,8 @@ import org.springframework.kafka.listener.MessageListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import repick.realtimechat.DTO.UpdateUserNickName;
+import repick.realtimechat.domain.ChatUser;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,7 +27,7 @@ public class KafkaServiceImpl implements KafkaService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final WebSocketService webSocketService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ChatUserService chatUserService;
     private final ConcurrentKafkaListenerContainerFactory<String, String> factory;
     private final Map<String, ConcurrentMessageListenerContainer<String, String>> containers = new HashMap<>();
 
@@ -34,6 +37,11 @@ public class KafkaServiceImpl implements KafkaService {
     public void sendMessage(String topic, String message) {
         kafkaTemplate.send(topic, message);
         System.out.println("Producer MessageDTO Sent : " + message);
+    }
+
+    @KafkaListener(id = "realtimechat", topics = "updateusernickname")
+    public void listen(UpdateUserNickName updateUserNickName){
+        chatUserService.UpdateUserNickName(updateUserNickName);
     }
 
     @Override
