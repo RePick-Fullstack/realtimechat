@@ -7,5 +7,5 @@ public interface ChatUserService {
     ChatUser saveUserFromToken(String token);
 
     ChatUser getUserId(Long id);
-    void UpdateUserNickName(UpdateUserNickName updateUserNickName);
+    void UpdateUserNickName(Long id, String nickname);
 }

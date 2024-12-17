@@ -1,5 +1,7 @@
 package repick.realtimechat.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -31,6 +33,7 @@ public class KafkaServiceImpl implements KafkaService {
     private final ChatUserService chatUserService;
     private final ConcurrentKafkaListenerContainerFactory<String, byte[]> factory;
     private final Map<String, ConcurrentMessageListenerContainer<String, byte[]>> containers = new HashMap<>();
+    private final ObjectMapper jsonMapper;
 
     @Value("${kafka.consumer.group-id:default-group}")
     private String groupId;
@@ -41,9 +44,11 @@ public class KafkaServiceImpl implements KafkaService {
     }
 
     @KafkaListener(id = "realtimechat", topics = "updateusernickname")
-    public void listen(UpdateUserNickName updateUserNickName){
-        System.out.println("User NickName Changed: " + updateUserNickName.getNickName());
-        chatUserService.UpdateUserNickName(updateUserNickName);
+    public void listen(String string) throws JsonProcessingException {
+        JsonNode jsonNode = jsonMapper.readTree(string);
+        Long id = jsonNode.get("userId").asLong();
+        String nickname = jsonNode.get("nickName").asText();
+        chatUserService.UpdateUserNickName(id, nickname);
     }
 
     @Override

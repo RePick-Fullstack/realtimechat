@@ -41,7 +41,7 @@ public class ChatUserServiceImpl implements ChatUserService {
     }
 
     @Override
-    public void UpdateUserNickName(UpdateUserNickName updateUserNickName){
-        chatUserRepository.updateNicknameById(updateUserNickName.getUserId(), updateUserNickName.getNickName());
+    public void UpdateUserNickName(Long id, String nickname){
+        chatUserRepository.updateNicknameById(id, nickname);
     }
 }
