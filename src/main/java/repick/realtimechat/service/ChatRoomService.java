@@ -15,4 +15,5 @@ public interface ChatRoomService {
     ChatRoom findChatRoomByUUID(UUID uuid);
     Page<ChatRoomResponse> getChatRoom(int page, int size);
     void resetChatRoom();
+    void joinChatRoom(String uuid, Long id);
 }

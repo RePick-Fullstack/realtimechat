@@ -61,9 +61,11 @@ public class WebSocketServiceImpl implements WebSocketService {
     @Override
     public void tokenMessage(WebSocketSession session, Long id) {
         String chatRoomId = getChatRoomId(session);
+        System.out.println(chatRoomId);
         ChatUser chatUser = chatUserService.getUserId(id);
         sessions.computeIfAbsent(chatRoomId, k -> new HashMap<>()).put(session, ChatUserResponse.from(chatUser));
         useridSessions.put(id, session);
+        chatRoomService.joinChatRoom(chatRoomId, id);
 
     }
 

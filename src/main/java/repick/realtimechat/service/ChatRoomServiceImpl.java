@@ -12,6 +12,7 @@ import repick.realtimechat.domain.ChatUser;
 import repick.realtimechat.domain.HashTag;
 import repick.realtimechat.repository.ChatRoomRepository;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,6 +26,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public void createChatRoom(ChatRoomRequest chatRoomRequest, ChatUser chatUser, Set<HashTag> hashTags) {
         ChatRoom chatroom = chatRoomRequest.toEntity(chatUser,hashTags);
         chatRoomRepository.save(chatroom);
+    }
+
+    @Override
+    public void joinChatRoom(String uuid, Long id){
+        Long chatRoomId = chatRoomRepository.getChatRoomUuid(UUID.fromString(uuid));
+        if(chatRoomRepository.existsChatUserInChatRoom(chatRoomId, id) == 0){
+        chatRoomRepository.addChatUserToChatRoom(chatRoomId, id);
+        }
     }
 
     @Override
