@@ -3,6 +3,7 @@ package repick.realtimechat.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import repick.realtimechat.DTO.MessageDTO;
 import repick.realtimechat.domain.ChatRoom;
@@ -23,6 +24,6 @@ public class ChatRoomMessageServiceImpl implements ChatRoomMessageService {
 
     @Override
     public Page<MessageDTO> getChatRoomId(Long chatRoomId, int page, int size){
-        return chatRoomMessageRepository.findChatRoomId(chatRoomId, PageRequest.of(page, size)).map(MessageDTO::from);
+        return chatRoomMessageRepository.findChatRoomId(chatRoomId, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"))).map(MessageDTO::from);
     }
 }
